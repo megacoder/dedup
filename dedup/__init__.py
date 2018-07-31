@@ -20,11 +20,16 @@ except Exception, e:
 
 class	Deduplicate( object ):
 
-	def	__init__( self ):
-		self.name_to_hash = dict()
+	def	__init__( self, out = sys.stdout ):
+		self.name_to_hash  = dict()
 		self.hash_to_names = dict()
-		self.ignored      = dict()
-		self.ignored      = [ '.git' ]
+		self.ignored       = dict()
+		self.out           = out
+		self.ignored       = [ '.git' ]
+		return
+
+	def	chatter( self, s ):
+		print >>self.out, s
 		return
 
 	def	_do_name( self, name ):
