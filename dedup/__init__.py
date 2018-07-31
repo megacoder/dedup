@@ -6,7 +6,12 @@ import	os
 import	subprocess
 import	hashlib
 import	argparse
-from	PIL			import	Image
+
+try:
+	from	PIL		import	Image
+except Exception, e:
+	print >>sys.stderr, 'No imaging library?'
+	exit( 1 )
 
 class	Deduplicate( object ):
 

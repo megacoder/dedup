@@ -3,10 +3,4 @@
 
 def	main():
 	import	dedup
-	print 'hi'
-	exit(
-		Deduplicate().main()
-	)
-
-# if __name__ == '__main__':
-#	 main()
+	return dedup.Deduplicate().main()
