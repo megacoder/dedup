@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # vim: noet sw=4 ts=4
 
 from	setuptools	import	setup
@@ -9,7 +9,7 @@ import	os
 NAME	= 'dedup'
 VERSION = '0.0.0rc0'
 
-with open( '{0}/version.py'.format( 'src' ), 'w') as f:
+with open( '{0}/version.py'.format( NAME ), 'w') as f:
 	print >>f, 'Version="{0}"'.format( VERSION )
 
 setup(
@@ -23,9 +23,9 @@ setup(
 	long_description =	open('README.md').read(),
 	packages         =	[ NAME ],
 	package_dir      =	{
-			NAME : 'src'
+			NAME : NAME,
 	},
-	scripts			 =	{
-                'scripts/{0}'.format( NAME ),
+	entry_points = {
+		'console_scripts' : [ 'dedup=
 	},
 )
