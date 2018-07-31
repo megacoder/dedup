@@ -8,6 +8,11 @@ import	hashlib
 import	argparse
 
 try:
+	from	version	import	Version
+except:
+	Version = 'What Tommy Found'
+
+try:
 	from	PIL		import	Image
 except Exception, e:
 	print >>sys.stderr, 'No imaging library?'
@@ -115,6 +120,12 @@ class	Deduplicate( object ):
 			dest   = 'verbose',
 			action = 'store_true',
 			help   = 'chatter about our activities',
+		)
+		p.add_argument(
+			'--version',
+			action  = 'version',
+			version = Version,
+			help    = 'Program Version {0}'.format( Version ),
 		)
 		p.add_argument(
 			dest    = 'names',
