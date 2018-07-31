@@ -21,11 +21,12 @@ except Exception, e:
 class	Deduplicate( object ):
 
 	def	__init__( self, out = sys.stdout ):
-		self.name_to_hash  = dict()
 		self.hash_to_names = dict()
 		self.ignored       = dict()
 		self.out           = out
-		self.ignored       = [ '.git' ]
+		self.ignored	   = dict({
+			'.git' : 0,
+		})
 		return
 
 	def	chatter( self, s ):
@@ -44,7 +45,19 @@ class	Deduplicate( object ):
 				area                     = width * height
 				if area < self.min_area:
 					too_small = True
-			except:
+					if self.args.verbose:
+						self.chatter(
+							'bbox( {0}, {1}, {2}, {3} ) too small: {4}'.format(
+								xmin, ymin,
+								xmax, ymax,
+								name
+							)
+						)
+			except Exception, e:
+				if self.args.verbose:
+					self.chatter(
+						'not an image: {0} [{1}]'.format( name, e )
+					)
 				pass
 		#
 		h = hashlib.md5()
@@ -57,11 +70,9 @@ class	Deduplicate( object ):
 		hash = h.hexdigest()
 		self.hash_to_names[ hash ] = self.hash_to_names.get( hash, list() ) + [ name ]
 		if too_small:
-			# Hack: make sure thumbnail is listed twice so it will be
-			# discarded.
+			# Hack: make sure thumbnail is listed twice so all thumbnails will
+			# be discarded.
 			self.hash_to_names[ hash ] += [ name ]
-		if name not in self.name_to_hash:
-			self.name_to_hash[ name ] = hash
 		# print '{0}\t{1}'.format( hash, name )
 		return
 
@@ -116,7 +127,7 @@ class	Deduplicate( object ):
 			'--out',
 			dest    = 'out',
 			default = None,
-			metavar = 'SCRIPT',
+			metavar = 'FILE',
 			help    = 'write commands here inst4ead of stdout',
 		)
 		p.add_argument(
@@ -155,34 +166,32 @@ class	Deduplicate( object ):
 		for name in self.args.names:
 			self.process( name )
 		self.report()
-		return
+		return 0
 
 	def	report( self ):
-		total    = 0
-		deleted  = 0
-		original = 0
-		# Sort by hash owner filenames
-		for name in sorted( self.name_to_hash ):
-			original += 1
-			hash = self.name_to_hash[ name ]
-			print '# {0}  {1}'.format(
-				hash,
-				name,
-			)
-			collisions = self.hash_to_names[ hash ][1:]
-			total += len( collisions )
-			for goner in sorted( collisions ):
-				deleted += 1
-				print '$ rm -f {0}'.format( goner )
-				if not self.args.kidding:
-					try:
-						os.unlink( name )
-					except Exception, e:
-						pass
-		fmt = '# {0:6d} {1}'
-		print fmt.format( original, 'original' )
-		print fmt.format( deleted, 'deleted' )
-		print fmt.format( total,   'total' )
+		# For each hash, keep only the shortest filename and
+		# delete all others.
+		for hash in self.hash_to_names:
+			names = self.hash_to_names[ hash ]
+			if len( names ) > 1:
+				# Collisions on this hash, delete extras
+				names.sort(
+					key = lambda s : len( s )
+				)
+				print '# {0}  {1}'.format(
+					hash,
+					names[0]
+				)
+				for goner in names[1:]:
+					if self.args.kidding:
+						print "rm -f '{0}'".format( goner )
+					else:
+						if self.args.verbose:
+							print "rm -f '{0}'".format( goner )
+						try:
+							os.unlink( goner )
+						except Exception, e:
+							pass
 		return
 
 if __name__ == '__main__':
