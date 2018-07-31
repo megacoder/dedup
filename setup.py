@@ -7,7 +7,7 @@ import	glob
 import	os
 
 NAME	= 'dedup'
-VERSION = '0.0.0rc0'
+VERSION = '0.0.0rc1'
 
 with open( '{0}/version.py'.format( NAME ), 'w') as f:
 	print >>f, 'Version="{0}"'.format( VERSION )
