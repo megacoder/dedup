@@ -22,10 +22,7 @@ setup(
 	url              =	'http://www.MegaCoder.com',
 	long_description =	open('README.md').read(),
 	packages         =	[ NAME ],
-	package_dir      =	{
-			NAME : NAME,
-	},
 	entry_points = {
-		'console_scripts' : [ 'dedup=
+		'console_scripts' : [ 'dedup=dedup.cli:main' ],
 	},
 )
