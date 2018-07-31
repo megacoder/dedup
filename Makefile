@@ -1,4 +1,4 @@
-all::	
+all::
 
 build::	setup.py
 	python setup.py build
@@ -13,4 +13,4 @@ clean::
 	${RM} -r build
 
 distclean clobber:: clean
-	${RM} -r dist
+	${RM} -r dist *.egg-info
