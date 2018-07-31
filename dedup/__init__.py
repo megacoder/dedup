@@ -133,6 +133,7 @@ class	Deduplicate( object ):
 			sys.stdout = open( self.args.out, 'w' )
 		for name in self.args.names:
 			self.process( name )
+		self.report()
 		return
 
 	def	report( self ):
@@ -164,7 +165,4 @@ class	Deduplicate( object ):
 		return
 
 if __name__ == '__main__':
-	dd = Deduplicate()
-	dd.main()
-	dd.report()
-	exit( 0 )
+	exit( Deduplicate().main() )
